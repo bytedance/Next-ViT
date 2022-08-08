@@ -52,13 +52,6 @@ We provide a series of Next-ViT models pretrained on ILSVRC2012 ImageNet-1K data
 | Next-ViT-S | ImageNet-1K | 384 |   17.3   |    31.7    |           21.6            |           8.9           |83.6 |           -            |  -  |
 | Next-ViT-B | ImageNet-1K | 384 |   24.6   |    44.8     |           29.6            |           12.4         |84.3 |           -            |  -  |
 | Next-ViT-L | ImageNet-1K | 384 |   32.0   |    57.8     |           36.0            |           15.2         |84.7  |           -            |  -  |
-| Next-ViT-S | ImageNet-1K-6M | 224 |   5.8   |    31.7     |           7.7             |           3.5           | 84.6 |           -            |  -  |
-| Next-ViT-B | ImageNet-1K-6M | 224 |   8.3   |    44.8     |           10.5            |           4.5           | 85.0 |           -            |  -  |
-| Next-ViT-L | ImageNet-1K-6M | 224 |   10.8   |    57.8     |           13.0            |           5.5          | 85.3 |           -            |  -  |
-| Next-ViT-S | ImageNet-1K-6M | 384 |   17.3  |    31.7     |           21.6            |           8.9           | - |           -            |  -  |
-| Next-ViT-B | ImageNet-1K-6M | 384  |   24.6   |    44.8     |           29.6            |           12.4        | - |           -            |  -  |
-| Next-ViT-L | ImageNet-1K-6M | 384 |   32.0   |    57.8     |           36.0            |           15.2         | - |           -            |  -  |
-
 
 #### Training
 
