@@ -141,11 +141,13 @@ Convert Next-ViT-S to CoreML model with `coremltools==5.2.0`, run:
 cd deployment/
 python3 export_coreml_model.py --model nextvit_small --batch-size 1 --image-size 224
 ```
-|   Model    | Resolution  | FLOPs (G) | CoreML <br/>Latency(ms) |                                            CoreML Model                                             |
-|:----------:|:-----------:|:---------:|:-----------------------:|:------------q---------------------------------------------------------------------------------------:| 
-| Next-ViT-S |     224     |    5.8    |           3.5           |    [mlmodel](https://drive.google.com/file/d/1_N7tsHyz4gs7rzNmslqwrzsaGbWhF_MU/view?usp=sharing)    |
-| Next-ViT-B |     224     |    8.3    |           4.5           |    [mlmodel](https://drive.google.com/file/d/15jLWSgDpkVmUCjRVzQZ9_LDT1SAAeGyU/view?usp=sharing)    |
-| Next-ViT-L |     224     |   10.8    |           5.5           |    [mlmodel](https://drive.google.com/file/d/1XEfBDpRYroTnDpOQwLaZbnWdCCGtoK1c/view?usp=sharing)    |
+
+| Backbone   | Resolution | FLOPs (G) | CoreML <br/>Latency(ms) |                                         CoreML Model                                          |
+|------------|:----------:|:---------:|:-----------------------:|:---------------------------------------------------------------------------------------------:|
+| Next-ViT-S |    224     |    5.8    |           3.5           | [mlmodel](https://drive.google.com/file/d/1_N7tsHyz4gs7rzNmslqwrzsaGbWhF_MU/view?usp=sharing) |
+| Next-ViT-B |    224     |    8.3    |           4.5           | [mlmodel](https://drive.google.com/file/d/15jLWSgDpkVmUCjRVzQZ9_LDT1SAAeGyU/view?usp=sharing) |
+| Next-ViT-L |    224     |   10.8    |           5.5           | [mlmodel](https://drive.google.com/file/d/1XEfBDpRYroTnDpOQwLaZbnWdCCGtoK1c/view?usp=sharing) |
+
 
 We uniformly benchmark CoreML Latency on an iPhone12 Pro Max(iOS 16.0) with Xcode 14.0. The performance report of CoreML model can be generated with Xcode 14.0 directly([new feature](https://developer.apple.com/videos/play/wwdc2022/10027/) of Xcode 14.0).  
 ![Next-ViT-R](images/coreml_runtime.jpeg)
