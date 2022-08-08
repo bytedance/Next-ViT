@@ -1,0 +1,15 @@
+torch==1.10.0
+timm==0.4.9
+pynvml==11.4.1
+pytz==2021.3
+requests==2.27.1
+
+termcolor==1.1.0
+yacs==0.1.8
+einops==0.4.1
+tqdm==4.59.0
+fvcore==0.1.5.post20220512
+
+mmcv-full==1.5.0
+mmdet==2.23.0
+mmsegmentation==0.23.0
