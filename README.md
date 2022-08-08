@@ -1,5 +1,8 @@
 # Next-ViT
-This repo is the official implementation of ["Next-ViT: Next Generation Vision Transformer for Efficient Deployment in Realistic Industrial Scenarios"](https://arxiv.org/abs/2207.05501).  
+This repo is the official implementation of ["Next-ViT: Next Generation Vision Transformer for Efficient Deployment in Realistic Industrial Scenarios"](https://arxiv.org/abs/2207.05501). This algorithm is proposed by ByteDance, Intelligent Creation, AutoML Team (字节跳动-智能创作 AutoML团队).
+
+## Overview
+
 <div style="text-align: center">
 <img src="images/structure.png" title="Next-ViT-S" height="75%" width="75%">
 </div>
@@ -159,13 +162,9 @@ Convert Next-ViT-S to TensorRT engine with `tensorrt==8.0.3.4`, run:
 cd deployment/
 python3 export_tensorrt_engine.py --model nextvit_small --batch-size 8  --image-size 224 --datatype fp16 --profile True --trtexec-path /usr/bin/trtexec
 ```
-## Acknowledgement
-
-We heavily borrow the code from [Twins](https://github.com/Meituan-AutoML/Twins).
 
 ## Citation
 If you find this project useful in your research, please consider cite:
-
 ```
 @article{li2022next,
   title={Next-ViT: Next Generation Vision Transformer for Efficient Deployment in Realistic Industrial Scenarios},
@@ -174,3 +173,9 @@ If you find this project useful in your research, please consider cite:
   year={2022}
 }
 ```
+
+## Acknowledgement
+We heavily borrow the code from [Twins](https://github.com/Meituan-AutoML/Twins).
+
+## License
+This repository is released under the Apache 2.0 license as found in the [LICENSE](LICENSE) file.
