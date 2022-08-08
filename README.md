@@ -44,14 +44,14 @@ The directory structure is the standard layout for the torchvision [`datasets.Im
 ## Image Classification
 We provide a series of Next-ViT models pretrained on ILSVRC2012 ImageNet-1K dataset. More details can be seen in [[paper]](https://arxiv.org/abs/2207.05501).
 
-| Model | Dataset | Resolution | FLOPs (G) | Params (M) | TensorRT <br/>Latency(ms) | CoreML <br/>Latency(ms) | Acc@1 | Pytorch<br/>Checkpoint | Log |
-|:-----:|:-----:|:-----:|:-----:|:--------:|:-----------:|:-------------------------:|:-----------------------:|:----------------------:|:---:| 
-| Next-ViT-S | ImageNet-1K | 224 |   5.8    |    31.7     |            7.7            |           3.5          | 82.5 |           -            |  -  |
-| Next-ViT-B | ImageNet-1K | 224 |   8.3    |    44.8     |           10.5            |           4.5          | 83.2 |           -            |  -  |
-| Next-ViT-L | ImageNet-1K | 224 |   10.8   |    57.8     |           13.0            |           5.5          | 83.6 |           -            |  -  |
-| Next-ViT-S | ImageNet-1K | 384 |   17.3   |    31.7    |           21.6            |           8.9           |83.6 |           -            |  -  |
-| Next-ViT-B | ImageNet-1K | 384 |   24.6   |    44.8     |           29.6            |           12.4         |84.3 |           -            |  -  |
-| Next-ViT-L | ImageNet-1K | 384 |   32.0   |    57.8     |           36.0            |           15.2         |84.7  |           -            |  -  |
+| Model      |  Dataset    | Resolution | FLOPs (G) | Params (M) | TensorRT <br/>Latency(ms) | CoreML <br/>Latency(ms)  | Acc@1 |                                           ckpt                                             |                   log                  |
+|------------|:-----------:|:----------:|:---------:|:----------:|:-------------------------:|:------------------------:|:-----:|:------------------------------------------------------------------------------------------:|:--------------------------------------:| 
+| Next-ViT-S | ImageNet-1K |    224     |    5.8    |    31.7    |            7.7            |           3.5            | 82.5  | [ckpt](https://drive.google.com/file/d/1yoJFpMdnwVseEEnSJxF8CIZ_txn1o_aS/view?usp=sharing) | [log](logs/nextvit_small_in1k_224.log) |
+| Next-ViT-B | ImageNet-1K |    224     |    8.3    |    44.8    |           10.5            |           4.5            | 83.2  | [ckpt](https://drive.google.com/file/d/1zaYLlDKMI0OUcYBPoGPXR8lKdrsBq3qp/view?usp=sharing) | [log](logs/nextvit_base_in1k_224.log)  |
+| Next-ViT-L | ImageNet-1K |    224     |   10.8    |    57.8    |           13.0            |           5.5            | 83.6  | [ckpt](https://drive.google.com/file/d/15hiQhAu_YNXboVPsbXpuaflfYkodkYZk/view?usp=sharing) | [log](logs/nextvit_large_in1k_224.log) |
+| Next-ViT-S | ImageNet-1K |    384     |   17.3    |    31.7    |           21.6            |           8.9            | 83.6  | [ckpt](https://drive.google.com/file/d/1lBBqXFFjWdaPq-zqKyW0uTsToQh43mP_/view?usp=sharing) | [log](logs/nextvit_small_in1k_384.log) |
+| Next-ViT-B | ImageNet-1K |    384     |   24.6    |    44.8    |           29.6            |           12.4           | 84.3  | [ckpt](https://drive.google.com/file/d/1D1oZUBHEpWb8uzoRuLs-aFcyjX74zzb3/view?usp=sharing) | [log](logs/nextvit_base_in1k_384.log)  |
+| Next-ViT-L | ImageNet-1K |    384     |   32.0    |    57.8    |           36.0            |           15.2           | 84.7  | [ckpt](https://drive.google.com/file/d/1MMGeXeIqrL8UXYuHEFdMArPDd-8L51Ag/view?usp=sharing) | [log](logs/nextvit_large_in1k_384.log) |
 
 #### Training
 
@@ -79,14 +79,14 @@ bash train.sh 8 --model nextvit_small --batch-size 256 --lr 5e-4 --warmup-epochs
 Our code is based on  [mmdetection](https://github.com/open-mmlab/mmdetection), please install `mmdetection==2.23.0`. Next-ViT serve as the strong backbones for
 Mask R-CNN. It's easy to apply Next-ViT in other detectors provided by mmdetection based on our examples. More details can be seen in [[paper]](https://arxiv.org/abs/2207.05501).
 #### Mask R-CNN
-| Backbone   | Lr Schd | Param.(M) | FLOPs(G) | bbox mAP | mask mAP | Pytorch<br/>Checkpoint | Log |
-|------------|:-------:|:---------:|:--------:|:--------:|:--------:|:----------------------:|:---:|
-| Next-ViT-S |   1x    |   51.8    |   290    |   45.9   |   41.8   |                        |     |
-| Next-ViT-S |   3x    |   51.8    |   290    |   48.0   |   43.2   |                        |     |
-| Next-ViT-B |   1x    |   64.9    |   340    |   47.2   |   42.8   |                        |     |
-| Next-ViT-B |   3x    |   64.9    |   340    |   49.5   |   44.4   |                        |     |
-| Next-ViT-L |   1x    |   77.9    |   391    |   48.0   |   43.2   |                        |     |
-| Next-ViT-L |   3x    |   77.9    |   391    |   50.2   |   44.8   |                        |     |
+| Backbone   | Lr Schd | Param.(M) | FLOPs(G) | bbox mAP | mask mAP |                                            ckpt                                            |                    log                     |
+|------------|:-------:|:---------:|:--------:|:--------:|:--------:|:------------------------------------------------------------------------------------------:|:------------------------------------------:|
+| Next-ViT-S |   1x    |   51.8    |   290    |   45.9   |   41.8   | [ckpt](https://drive.google.com/file/d/12epWrFRenpGdiPcXAgzSRoV-hmgsYZ5i/view?usp=sharing) | [log](logs/mask_rcnn_1x_nextvit_small.log) |
+| Next-ViT-S |   3x    |   51.8    |   290    |   48.0   |   43.2   | [ckpt](https://drive.google.com/file/d/1LESqQyyaw4iZqHM31ia24Rq8v33q5PP7/view?usp=sharing) | [log](logs/mask_rcnn_3x_nextvit_small.log) |
+| Next-ViT-B |   1x    |   64.9    |   340    |   47.2   |   42.8   | [ckpt](https://drive.google.com/file/d/1gptltvAQCaaOdhfgKhjgvke9S_8OYiWO/view?usp=sharing) | [log](logs/mask_rcnn_1x_nextvit_base.log)  |
+| Next-ViT-B |   3x    |   64.9    |   340    |   49.5   |   44.4   | [ckpt](https://drive.google.com/file/d/1blDx9nf58kZKWB1XUpQdZDlBRuDGFlmc/view?usp=sharing) | [log](logs/mask_rcnn_3x_nextvit_base.log)  |
+| Next-ViT-L |   1x    |   77.9    |   391    |   48.0   |   43.2   | [ckpt](https://drive.google.com/file/d/1-CPrwe4ZtgOCVV9YOzZoQunMUYDmlUgv/view?usp=sharing) | [log](logs/mask_rcnn_1x_nextvit_large.log) |
+| Next-ViT-L |   3x    |   77.9    |   391    |   50.2   |   44.8   | [ckpt](https://drive.google.com/file/d/1OIGevcsrAkTmb0hKmBD4iSI_WPdIZ_MA/view?usp=sharing) | [log](logs/mask_rcnn_3x_nextvit_large.log) |
 
 #### Training
 To train  Mask R-CNN with Next-ViT-S backbone using 8 gpus, run:
@@ -105,19 +105,19 @@ Our code is based on [mmsegmentation](https://github.com/open-mmlab/mmsegmentati
 
 #### Semantic FPN 80k
 
-| Backbone   | FLOPs(G) | Params (M) | TensorRT <br/>Latency(ms) | CoreML <br/>Latency(ms) | mIoU | Pytorch<br/>Checkpoint | Log |
-|------------|:--------:|:----------:|:-------------------------:|:-----------------------:|:----:|------------------------|:---:|
-| Next-ViT-S |   208    |    36.3    |           38.2            |          18.1           | 46.5 |                        |     |
-| Next-ViT-B |   260    |    49.3    |           51.6            |          24.4           | 48.6 |                        |     |
-| Next-ViT-L |   331    |    62.4    |           65.3            |          30.1           | 49.1 |                        |     |
+| Backbone   | FLOPs(G) | Params (M) | TensorRT <br/>Latency(ms) | CoreML <br/>Latency(ms) | mIoU | ckpt                                                                                       |                  log                  |
+|------------|:--------:|:----------:|:-------------------------:|:-----------------------:|:----:|--------------------------------------------------------------------------------------------|:-------------------------------------:|
+| Next-ViT-S |   208    |    36.3    |           38.2            |          18.1           | 46.5 | [ckpt](https://drive.google.com/file/d/1AnmFR984FUuTrb5xx-Q1rR7pd0EEZKKL/view?usp=sharing) | [log](logs/fpn_80k_nextvit_small.log) |
+| Next-ViT-B |   260    |    49.3    |           51.6            |          24.4           | 48.6 | [ckpt](https://drive.google.com/file/d/1ts748a9EoMA1QlYzW1PoWYdV0Ec0zk16/view?usp=sharing) | [log](logs/fpn_80k_nextvit_base.log)  |
+| Next-ViT-L |   331    |    62.4    |           65.3            |          30.1           | 49.1 | [ckpt](https://drive.google.com/file/d/1XX64ugyL0OV6BeDn1A5UwbvM3nwt6fns/view?usp=sharing) | [log](logs/fpn_80k_nextvit_large.log) |
 
 #### UperNet 160k 
 
-| Backbone   | FLOPs(G) | Params (M) | TensorRT <br/>Latency(ms) | CoreML <br/>Latency(ms) | mIoU(ss/ms) | Pytorch<br/>Checkpoint | Log |
-|------------|:--------:|:----------:|:-------------------------:|:-----------------------:|:-----------:|------------------------|:---:|
-| Next-ViT-S |   968    |    66.3    |           38.2            |          18.1           |  48.1/49.0  |                        |     |
-| Next-ViT-B |   1020   |    79.3    |           51.6            |          24.4           |  50.4/51.1  |                        |     |
-| Next-ViT-L |   1072   |    92.4    |           65.3            |          30.1           |  50.1/50.8  |                        |     |
+| Backbone   | FLOPs(G) | Params (M) | TensorRT <br/>Latency(ms) | CoreML <br/>Latency(ms) | mIoU(ss/ms) | ckpt                                                                                       |                    log                     |
+|------------|:--------:|:----------:|:-------------------------:|:-----------------------:|:-----------:|--------------------------------------------------------------------------------------------|:------------------------------------------:|
+| Next-ViT-S |   968    |    66.3    |           38.2            |          18.1           |  48.1/49.0  | [ckpt](https://drive.google.com/file/d/1Zi-kW7jQM5Ii1ohmHqTZYSaxUoIzNjTJ/view?usp=sharing) | [log](logs/upernet_160k_nextvit_small.log) |
+| Next-ViT-B |   1020   |    79.3    |           51.6            |          24.4           |  50.4/51.1  | [ckpt](https://drive.google.com/file/d/1n4VgTsGhDg1D5MeDvlGXmwrgZpST2xHm/view?usp=sharing) | [log](logs/upernet_160k_nextvit_base.log)  |
+| Next-ViT-L |   1072   |    92.4    |           65.3            |          30.1           |  50.1/50.8  | [ckpt](https://drive.google.com/file/d/1M4_8nQz8F_sinsxeRZvFm7o6b8paSyTz/view?usp=sharing) | [log](logs/upernet_160k_nextvit_large.log) |
 
 
 #### Training
@@ -141,11 +141,11 @@ Convert Next-ViT-S to CoreML model with `coremltools==5.2.0`, run:
 cd deployment/
 python3 export_coreml_model.py --model nextvit_small --batch-size 1 --image-size 224
 ```
-| Model | Resolution | FLOPs (G) | CoreML <br/>Latency(ms) | CoreML Model |
-|:-----:|:-----:|:-----:|:--------:|:-----------:| 
-| Next-ViT-S | 224 |   5.8    |           3.5          |  |
-| Next-ViT-B | 224 |   8.3    |           4.5          |  |
-| Next-ViT-L | 224 |   10.8   |           5.5          |  |
+|   Model    | Resolution  | FLOPs (G) | CoreML <br/>Latency(ms) |                                            CoreML Model                                             |
+|:----------:|:-----------:|:---------:|:-----------------------:|:------------q---------------------------------------------------------------------------------------:| 
+| Next-ViT-S |     224     |    5.8    |           3.5           |    [mlmodel](https://drive.google.com/file/d/1_N7tsHyz4gs7rzNmslqwrzsaGbWhF_MU/view?usp=sharing)    |
+| Next-ViT-B |     224     |    8.3    |           4.5           |    [mlmodel](https://drive.google.com/file/d/15jLWSgDpkVmUCjRVzQZ9_LDT1SAAeGyU/view?usp=sharing)    |
+| Next-ViT-L |     224     |   10.8    |           5.5           |    [mlmodel](https://drive.google.com/file/d/1XEfBDpRYroTnDpOQwLaZbnWdCCGtoK1c/view?usp=sharing)    |
 
 We uniformly benchmark CoreML Latency on an iPhone12 Pro Max(iOS 16.0) with Xcode 14.0. The performance report of CoreML model can be generated with Xcode 14.0 directly([new feature](https://developer.apple.com/videos/play/wwdc2022/10027/) of Xcode 14.0).  
 ![Next-ViT-R](images/coreml_runtime.jpeg)
