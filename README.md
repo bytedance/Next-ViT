@@ -82,14 +82,14 @@ bash train.sh 8 --model nextvit_small --batch-size 256 --lr 5e-4 --warmup-epochs
 Our code is based on  [mmdetection](https://github.com/open-mmlab/mmdetection), please install `mmdetection==2.23.0`. Next-ViT serve as the strong backbones for
 Mask R-CNN. It's easy to apply Next-ViT in other detectors provided by mmdetection based on our examples. More details can be seen in [[paper]](https://arxiv.org/abs/2207.05501).
 #### Mask R-CNN
-| Backbone   | Lr Schd | Param.(M) | FLOPs(G) | bbox mAP | mask mAP |                                            ckpt                                            |                    log                     |
-|------------|:-------:|:---------:|:--------:|:--------:|:--------:|:------------------------------------------------------------------------------------------:|:------------------------------------------:|
-| Next-ViT-S |   1x    |   51.8    |   290    |   45.9   |   41.8   | [ckpt](https://drive.google.com/file/d/12epWrFRenpGdiPcXAgzSRoV-hmgsYZ5i/view?usp=sharing) | [log](logs/mask_rcnn_1x_nextvit_small.log) |
-| Next-ViT-S |   3x    |   51.8    |   290    |   48.0   |   43.2   | [ckpt](https://drive.google.com/file/d/1LESqQyyaw4iZqHM31ia24Rq8v33q5PP7/view?usp=sharing) | [log](logs/mask_rcnn_3x_nextvit_small.log) |
-| Next-ViT-B |   1x    |   64.9    |   340    |   47.2   |   42.8   | [ckpt](https://drive.google.com/file/d/1gptltvAQCaaOdhfgKhjgvke9S_8OYiWO/view?usp=sharing) | [log](logs/mask_rcnn_1x_nextvit_base.log)  |
-| Next-ViT-B |   3x    |   64.9    |   340    |   49.5   |   44.4   | [ckpt](https://drive.google.com/file/d/1blDx9nf58kZKWB1XUpQdZDlBRuDGFlmc/view?usp=sharing) | [log](logs/mask_rcnn_3x_nextvit_base.log)  |
-| Next-ViT-L |   1x    |   77.9    |   391    |   48.0   |   43.2   | [ckpt](https://drive.google.com/file/d/1-CPrwe4ZtgOCVV9YOzZoQunMUYDmlUgv/view?usp=sharing) | [log](logs/mask_rcnn_1x_nextvit_large.log) |
-| Next-ViT-L |   3x    |   77.9    |   391    |   50.2   |   44.8   | [ckpt](https://drive.google.com/file/d/1OIGevcsrAkTmb0hKmBD4iSI_WPdIZ_MA/view?usp=sharing) | [log](logs/mask_rcnn_3x_nextvit_large.log) |
+| Backbone   | Lr Schd | Param.(M) | FLOPs(G) | TensorRT <br/>Latency(ms) | CoreML <br/>Latency(ms) | bbox mAP | mask mAP |                                            ckpt                                            |                    log                     |
+|------------|:-------:|:---------:|:--------:|:-------------------------:|:-----------------------:|:--------:|:--------:|:------------------------------------------------------------------------------------------:|:------------------------------------------:|
+| Next-ViT-S |   1x    |   51.8    |   290    |           38.2            |          18.1           |   45.9   |   41.8   | [ckpt](https://drive.google.com/file/d/12epWrFRenpGdiPcXAgzSRoV-hmgsYZ5i/view?usp=sharing) | [log](logs/mask_rcnn_1x_nextvit_small.log) |
+| Next-ViT-S |   3x    |   51.8    |   290    |           38.2            |          18.1           |   48.0   |   43.2   | [ckpt](https://drive.google.com/file/d/1LESqQyyaw4iZqHM31ia24Rq8v33q5PP7/view?usp=sharing) | [log](logs/mask_rcnn_3x_nextvit_small.log) |
+| Next-ViT-B |   1x    |   64.9    |   340    |           51.6            |          24.4           |   47.2   |   42.8   | [ckpt](https://drive.google.com/file/d/1gptltvAQCaaOdhfgKhjgvke9S_8OYiWO/view?usp=sharing) | [log](logs/mask_rcnn_1x_nextvit_base.log)  |
+| Next-ViT-B |   3x    |   64.9    |   340    |           51.6            |          24.4           |   49.5   |   44.4   | [ckpt](https://drive.google.com/file/d/1blDx9nf58kZKWB1XUpQdZDlBRuDGFlmc/view?usp=sharing) | [log](logs/mask_rcnn_3x_nextvit_base.log)  |
+| Next-ViT-L |   1x    |   77.9    |   391    |           65.3            |          30.1           |   48.0   |   43.2   | [ckpt](https://drive.google.com/file/d/1-CPrwe4ZtgOCVV9YOzZoQunMUYDmlUgv/view?usp=sharing) | [log](logs/mask_rcnn_1x_nextvit_large.log) |
+| Next-ViT-L |   3x    |   77.9    |   391    |           65.3            |          30.1           |   50.2   |   44.8   | [ckpt](https://drive.google.com/file/d/1OIGevcsrAkTmb0hKmBD4iSI_WPdIZ_MA/view?usp=sharing) | [log](logs/mask_rcnn_3x_nextvit_large.log) |
 
 #### Training
 To train  Mask R-CNN with Next-ViT-S backbone using 8 gpus, run:
