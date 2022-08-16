@@ -1,6 +1,13 @@
 # Next-ViT
 This repo is the official implementation of ["Next-ViT: Next Generation Vision Transformer for Efficient Deployment in Realistic Industrial Scenarios"](https://arxiv.org/abs/2207.05501). This algorithm is proposed by ByteDance, Intelligent Creation, AutoML Team (字节跳动-智能创作 AutoML团队).
 
+## Updates
+
+
+***08/16/2022***
+
+1. Pretrained models on ImageNet-1K-6M ([Next-ViT-S-IN1K-6M-224](https://drive.google.com/file/d/1b7ChnlT3uG3pTaZjtwYtnAaxAESF0MqK/view), [Next-ViT-B-IN1K-6M-224](https://drive.google.com/file/d/1qYtex2EZ23TzVqaFlGh14hAxVjfuILWv/view), [Next-ViT-L-IN1K-6M-224](https://drive.google.com/file/d/1F5iLING3RzNbuZb4RwL7NLZZmJulKW3N/view), [Next-ViT-S-IN1K-6M-384](https://drive.google.com/file/d/104jeld9rJq8vwJ-i-RqlzF3mJzXCcQp9/view), [Next-ViT-B-IN1K-6M-384](https://drive.google.com/file/d/17bCu4EbxOUmhgPCP5wlDH_p8m35oTT38/view), [Next-ViT-L-IN1K-6M-384](https://drive.google.com/file/d/1ZuLswj2xbUdg_t8TugjSJwDsHuIuMSIC/view)) are provided.
+
 ## Overview
 
 <div style="text-align: center">
