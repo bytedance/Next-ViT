@@ -158,7 +158,7 @@ class E_MHSA(nn.Module):
         if sr_ratio > 1:
             self.sr = nn.AvgPool1d(kernel_size=self.N_ratio, stride=self.N_ratio)
             self.norm = nn.BatchNorm1d(dim, eps=NORM_EPS)
-        self.is_bn_merge = False
+        self.is_bn_merged = False
     def merge_bn(self, pre_bn):
         merge_pre_bn(self.q, pre_bn)
         if self.sr_ratio > 1:
@@ -167,7 +167,7 @@ class E_MHSA(nn.Module):
         else:
             merge_pre_bn(self.k, pre_bn)
             merge_pre_bn(self.v, pre_bn)
-        self.is_bn_merge = True
+        self.is_bn_merged = True
     def forward(self, x):
         B, N, C = x.shape
         q = self.q(x)
@@ -176,7 +176,7 @@ class E_MHSA(nn.Module):
         if self.sr_ratio > 1:
             x_ = x.transpose(1, 2)
             x_ = self.sr(x_)
-            if not torch.onnx.is_in_onnx_export() and not self.is_bn_merge:
+            if not torch.onnx.is_in_onnx_export() and not self.is_bn_merged:
                 x_ = self.norm(x_)
             x_ = x_.transpose(1, 2)
             k = self.k(x_)
