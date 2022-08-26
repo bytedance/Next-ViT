@@ -325,12 +325,12 @@ class NextViT(nn.Module):
                     self.stage_out_channels[stage_id][-1], eps=NORM_EPS))
             self.extra_norm_list = nn.Sequential(*self.extra_norm_list)
 
-        self.norm = nn.BatchNorm2d(output_channel, eps=NORM_EPS)
-
-        self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
-        self.proj_head = nn.Sequential(
-            nn.Linear(output_channel, num_classes),
-        )
+        # self.norm = nn.BatchNorm2d(output_channel, eps=NORM_EPS)
+        #
+        # self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
+        # self.proj_head = nn.Sequential(
+        #     nn.Linear(output_channel, num_classes),
+        # )
 
         self.stage_out_idx = [sum(depths[:idx+1])-1 for idx in range(len(depths))]
         print ('initialize_weights...')
@@ -373,7 +373,7 @@ class NextViT(nn.Module):
             print('\n using pretrained model\n')
             logger = get_root_logger()
             checkpoint = torch.load(pretrained, map_location='cpu')['model']
-            self.load_state_dict(checkpoint, strict=True)
+            self.load_state_dict(checkpoint, strict=False)
     def _initialize_weights(self):
         for n, m in self.named_modules():
             if isinstance(m, (nn.BatchNorm2d, nn.GroupNorm, nn.LayerNorm, nn.BatchNorm1d)):
