@@ -6,6 +6,7 @@ from functools import partial
 from timm.models.layers import DropPath, trunc_normal_
 from timm.models.registry import register_model
 from utils import merge_pre_bn
+import torch.utils.checkpoint as checkpoint
 NORM_EPS=1e-5
 
 class ConvBNReLU(nn.Module):
@@ -260,9 +261,10 @@ class NTB(nn.Module):
 
 class NextViT(nn.Module):
     def __init__(self, stem_chs, depths, path_dropout, attn_drop=0, drop=0, num_classes=1000,
-            strides=[1, 2, 2, 2], sr_ratios=[8, 4, 2, 1], head_dim=32, mix_block_ratio=0.75,
-    ):
+                 strides=[1, 2, 2, 2], sr_ratios=[8, 4, 2, 1], head_dim=32, mix_block_ratio=0.75,
+                 use_checkpoint=False):
         super(NextViT, self).__init__()
+        self.use_checkpoint = use_checkpoint
 
         self.stage_out_channels = [[96]*(depths[0]),
                                    [192]*(depths[1]-1)+[256],
@@ -319,11 +321,13 @@ class NextViT(nn.Module):
         self.stage_out_idx = [sum(depths[:idx+1])-1 for idx in range(len(depths))]
         print ('initialize_weights...')
         self._initialize_weights()
+
     def merge_bn(self):
         self.eval()
         for idx, module in self.named_modules():
             if isinstance(module, NCB) or isinstance(module, NTB):
                 module.merge_bn()
+
     def _initialize_weights(self):
         for n, m in self.named_modules():
             if isinstance(m, (nn.BatchNorm2d, nn.GroupNorm, nn.LayerNorm, nn.BatchNorm1d)):
@@ -337,10 +341,14 @@ class NextViT(nn.Module):
                 trunc_normal_(m.weight, std=.02)
                 if hasattr(m, 'bias') and m.bias is not None:
                     nn.init.constant_(m.bias, 0)
+
     def forward(self, x):
         x = self.stem(x)
         for idx, layer in enumerate(self.features):
-            x = layer(x)
+            if self.use_checkpoint:
+                x = checkpoint.checkpoint(layer, x)
+            else:
+                x = layer(x)
         x = self.norm(x)
         x = self.avgpool(x)
         x = torch.flatten(x, 1)

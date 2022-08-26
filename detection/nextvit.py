@@ -8,6 +8,8 @@ from utils import merge_pre_bn
 from mmdet.models.builder import BACKBONES
 from mmdet.utils import get_root_logger
 from torch.nn.modules.batchnorm import _BatchNorm
+import torch.utils.checkpoint as checkpoint
+
 NORM_EPS=1e-5
 
 class ConvBNReLU(nn.Module):
@@ -258,12 +260,15 @@ class NTB(nn.Module):
             out = x
         x = x + self.mlp_path_dropout(self.mlp(out))
         return x
+
+
 class NextViT(nn.Module):
     def __init__(self, stem_chs, depths, path_dropout, attn_drop=0, drop=0, num_classes=1000,
-                 strides=[1, 2, 2, 2], sr_ratios=[8, 4, 2, 1], head_dim=32, mix_block_ratio=0.75, resume='',
-                 with_extra_norm=True, frozen_stages=-1, norm_eval=False, norm_cfg=None,
-                 ):
+                 strides=[1, 2, 2, 2], sr_ratios=[8, 4, 2, 1], head_dim=32, mix_block_ratio=0.75,
+                 use_checkpoint=False, resume='', with_extra_norm=True, frozen_stages=-1,
+                 norm_eval=False, norm_cfg=None,):
         super(NextViT, self).__init__()
+        self.use_checkpoint = use_checkpoint
         self.frozen_stages = frozen_stages
         self.with_extra_norm = with_extra_norm
         self.norm_eval = norm_eval
@@ -388,7 +393,10 @@ class NextViT(nn.Module):
         x = self.stem(x)
         stage_id = 0
         for idx, layer in enumerate(self.features):
-            x = layer(x)
+            if self.use_checkpoint:
+                x = checkpoint.checkpoint(layer, x)
+            else:
+                x = layer(x)
             if idx == self.stage_out_idx[stage_id]:
                 if self.with_extra_norm:
                     if stage_id<3:
