@@ -1,13 +1,16 @@
 # Copyright (c) ByteDance Inc. All rights reserved.
-import torch
-from torch import nn, einsum
-from einops import rearrange, repeat
 from functools import partial
+
+import torch
+import torch.utils.checkpoint as checkpoint
+from einops import rearrange
 from timm.models.layers import DropPath, trunc_normal_
 from timm.models.registry import register_model
+from torch import nn
 from utils import merge_pre_bn
-import torch.utils.checkpoint as checkpoint
-NORM_EPS=1e-5
+
+NORM_EPS = 1e-5
+
 
 class ConvBNReLU(nn.Module):
     def __init__(
@@ -22,11 +25,13 @@ class ConvBNReLU(nn.Module):
                               padding=1, groups=groups, bias=False)
         self.norm = nn.BatchNorm2d(out_channels, eps=NORM_EPS)
         self.act = nn.ReLU(inplace=True)
+
     def forward(self, x):
         x = self.conv(x)
         x = self.norm(x)
         x = self.act(x)
         return x
+
 
 def _make_divisible(v, divisor, min_value=None):
     if min_value is None:
@@ -36,6 +41,7 @@ def _make_divisible(v, divisor, min_value=None):
     if new_v < 0.9 * v:
         new_v += divisor
     return new_v
+
 
 class PatchEmbed(nn.Module):
     def __init__(self,
@@ -56,8 +62,10 @@ class PatchEmbed(nn.Module):
             self.avgpool = nn.Identity()
             self.conv = nn.Identity()
             self.norm = nn.Identity()
+
     def forward(self, x):
         return self.norm(self.conv(self.avgpool(x)))
+
 
 class MHCA(nn.Module):
     """
@@ -89,8 +97,10 @@ class Mlp(nn.Module):
         self.act = nn.ReLU(inplace=True)
         self.conv2 = nn.Conv2d(hidden_dim, out_features, kernel_size=1, bias=bias)
         self.drop = nn.Dropout(drop)
+
     def merge_bn(self, pre_norm):
         merge_pre_bn(self.conv1, pre_norm)
+
     def forward(self, x):
         x = self.conv1(x)
         x = self.act(x)
@@ -98,6 +108,7 @@ class Mlp(nn.Module):
         x = self.conv2(x)
         x = self.drop(x)
         return x
+
 
 class NCB(nn.Module):
     """
@@ -124,6 +135,7 @@ class NCB(nn.Module):
         if not self.is_bn_merged:
             self.mlp.merge_bn(self.norm)
             self.is_bn_merged = True
+
     def forward(self, x):
         x = self.patch_embed(x)
         x = x + self.attention_path_dropout(self.mhca(x))
@@ -131,8 +143,9 @@ class NCB(nn.Module):
             out = self.norm(x)
         else:
             out = x
-        x  = x + self.mlp_path_dropout(self.mlp(out))
+        x = x + self.mlp_path_dropout(self.mlp(out))
         return x
+
 
 class E_MHSA(nn.Module):
     """
@@ -158,6 +171,7 @@ class E_MHSA(nn.Module):
             self.sr = nn.AvgPool1d(kernel_size=self.N_ratio, stride=self.N_ratio)
             self.norm = nn.BatchNorm1d(dim, eps=NORM_EPS)
         self.is_bn_merged = False
+
     def merge_bn(self, pre_bn):
         merge_pre_bn(self.q, pre_bn)
         if self.sr_ratio > 1:
@@ -167,6 +181,7 @@ class E_MHSA(nn.Module):
             merge_pre_bn(self.k, pre_bn)
             merge_pre_bn(self.v, pre_bn)
         self.is_bn_merged = True
+
     def forward(self, x):
         B, N, C = x.shape
         q = self.q(x)
@@ -197,6 +212,7 @@ class E_MHSA(nn.Module):
         x = self.proj_drop(x)
         return x
 
+
 class NTB(nn.Module):
     """
     Next Transformer Block
@@ -208,21 +224,21 @@ class NTB(nn.Module):
         super(NTB, self).__init__()
         self.in_channels = in_channels
         self.out_channels = out_channels
-        self.mix_block_ratio=mix_block_ratio
+        self.mix_block_ratio = mix_block_ratio
         norm_func = partial(nn.BatchNorm2d, eps=NORM_EPS)
 
-        self.mhsa_out_channels = _make_divisible(int(out_channels*mix_block_ratio), 32)
+        self.mhsa_out_channels = _make_divisible(int(out_channels * mix_block_ratio), 32)
         self.mhca_out_channels = out_channels - self.mhsa_out_channels
 
         self.patch_embed = PatchEmbed(in_channels, self.mhsa_out_channels, stride)
         self.norm1 = norm_func(self.mhsa_out_channels)
         self.e_mhsa = E_MHSA(self.mhsa_out_channels, head_dim=head_dim, sr_ratio=sr_ratio,
                              attn_drop=attn_drop, proj_drop=drop)
-        self.mhsa_path_dropout = DropPath(path_dropout*mix_block_ratio)
+        self.mhsa_path_dropout = DropPath(path_dropout * mix_block_ratio)
 
         self.projection = PatchEmbed(self.mhsa_out_channels, self.mhca_out_channels, stride=1)
         self.mhca = MHCA(self.mhca_out_channels, head_dim=head_dim)
-        self.mhca_path_dropout = DropPath(path_dropout*(1-mix_block_ratio))
+        self.mhca_path_dropout = DropPath(path_dropout * (1 - mix_block_ratio))
 
         self.norm2 = norm_func(out_channels)
         self.mlp = Mlp(out_channels, mlp_ratio=mlp_ratio, drop=drop)
@@ -235,6 +251,7 @@ class NTB(nn.Module):
             self.e_mhsa.merge_bn(self.norm1)
             self.mlp.merge_bn(self.norm2)
             self.is_bn_merged = True
+
     def forward(self, x):
         x = self.patch_embed(x)
         B, C, H, W = x.shape
@@ -249,7 +266,6 @@ class NTB(nn.Module):
         out = self.projection(x)
         out = out + self.mhca_path_dropout(self.mhca(out))
         x = torch.cat([x, out], dim=1)
-
 
         if not torch.onnx.is_in_onnx_export() and not self.is_bn_merged:
             out = self.norm2(x)
@@ -266,16 +282,16 @@ class NextViT(nn.Module):
         super(NextViT, self).__init__()
         self.use_checkpoint = use_checkpoint
 
-        self.stage_out_channels = [[96]*(depths[0]),
-                                   [192]*(depths[1]-1)+[256],
-                                   [384, 384, 384, 384, 512]*(depths[2] // 5),
-                                   [768]*(depths[3]-1)+[1024]]
+        self.stage_out_channels = [[96] * (depths[0]),
+                                   [192] * (depths[1] - 1) + [256],
+                                   [384, 384, 384, 384, 512] * (depths[2] // 5),
+                                   [768] * (depths[3] - 1) + [1024]]
 
         # Next Hybrid Strategy
         self.stage_block_types = [[NCB] * depths[0],
-                            [NCB]*(depths[1]-1)+[NTB],
-                            [NCB, NCB, NCB, NCB, NTB]*(depths[2] // 5),
-                            [NCB]*(depths[3]-1)+[NTB]]
+                                  [NCB] * (depths[1] - 1) + [NTB],
+                                  [NCB, NCB, NCB, NCB, NTB] * (depths[2] // 5),
+                                  [NCB] * (depths[3] - 1) + [NTB]]
 
         self.stem = nn.Sequential(
             ConvBNReLU(3, stem_chs[0], kernel_size=3, stride=2),
@@ -299,11 +315,11 @@ class NextViT(nn.Module):
                 output_channel = output_channels[block_id]
                 block_type = block_types[block_id]
                 if block_type is NCB:
-                    layer = NCB(input_channel, output_channel, stride=stride, path_dropout=dpr[idx+block_id],
+                    layer = NCB(input_channel, output_channel, stride=stride, path_dropout=dpr[idx + block_id],
                                 drop=drop, head_dim=head_dim)
                     features.append(layer)
                 elif block_type is NTB:
-                    layer = NTB(input_channel, output_channel, path_dropout=dpr[idx+block_id], stride=stride,
+                    layer = NTB(input_channel, output_channel, path_dropout=dpr[idx + block_id], stride=stride,
                                 sr_ratio=sr_ratios[stage_id], head_dim=head_dim, mix_block_ratio=mix_block_ratio,
                                 attn_drop=attn_drop, drop=drop)
                     features.append(layer)
@@ -318,8 +334,8 @@ class NextViT(nn.Module):
             nn.Linear(output_channel, num_classes),
         )
 
-        self.stage_out_idx = [sum(depths[:idx+1])-1 for idx in range(len(depths))]
-        print ('initialize_weights...')
+        self.stage_out_idx = [sum(depths[:idx + 1]) - 1 for idx in range(len(depths))]
+        print('initialize_weights...')
         self._initialize_weights()
 
     def merge_bn(self):
@@ -355,15 +371,18 @@ class NextViT(nn.Module):
         x = self.proj_head(x)
         return x
 
+
 @register_model
 def nextvit_small(pretrained=False, pretrained_cfg=None, **kwargs):
     model = NextViT(stem_chs=[64, 32, 64], depths=[3, 4, 10, 3], path_dropout=0.1, **kwargs)
     return model
 
+
 @register_model
 def nextvit_base(pretrained=False, pretrained_cfg=None, **kwargs):
     model = NextViT(stem_chs=[64, 32, 64], depths=[3, 4, 20, 3], path_dropout=0.2, **kwargs)
     return model
+
 
 @register_model
 def nextvit_large(pretrained=False, pretrained_cfg=None, **kwargs):
